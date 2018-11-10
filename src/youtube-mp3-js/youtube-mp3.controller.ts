@@ -1,14 +1,10 @@
 import { Get, Controller, OnModuleInit, Res, Req, Param } from '@nestjs/common';
-import * as makeDir from 'make-dir';
-import * as path from 'path';
 import { Request, Response } from 'express';
 
 import { YoutubeMp3Service } from './youtube-mp3.service';
 
-const basePath = path.resolve(__dirname + '/../../cache');
-
 @Controller()
-export class YoutubeMp3Controller implements OnModuleInit {
+export class YoutubeMp3Controller {
   constructor(private readonly youtubeMp3Service: YoutubeMp3Service) {}
 
   @Get('channel/:id/rss.xml')
@@ -31,9 +27,5 @@ export class YoutubeMp3Controller implements OnModuleInit {
       response,
       request,
     );
-  }
-
-  onModuleInit(): any {
-    makeDir(basePath);
   }
 }
