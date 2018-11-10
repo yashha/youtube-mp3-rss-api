@@ -1,15 +1,10 @@
 import { HttpService, Injectable } from '@nestjs/common';
-import * as path from 'path';
 import * as ytdl from 'ytdl-core';
 import * as ffmpeg from 'fluent-ffmpeg';
 import * as RSS from 'rss';
-import * as fs from 'fs';
-import filenamify from 'filenamify';
 import { Request, Response } from 'express';
 import * as Parser from 'rss-parser';
 import stream from './stream';
-
-const basePath = path.resolve(__dirname + '/../../cache');
 
 @Injectable()
 export class YoutubeMp3Service {
