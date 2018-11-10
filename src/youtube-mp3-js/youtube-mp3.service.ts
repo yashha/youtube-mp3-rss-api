@@ -10,7 +10,7 @@ import stream from './stream';
 export class YoutubeMp3Service {
   constructor(private readonly httpService: HttpService) {}
 
-  async getRss(id, request) {
+  async getRss(id, request: Request) {
     let parser = new Parser({
       customFields: {
         item: ['media:group'],
@@ -40,13 +40,13 @@ export class YoutubeMp3Service {
             link: {
               _attr: {
                 rel: 'alternate',
-                href: `http://localhost:3000/v/${id}/file.mp3`,
+                href: `${request.protocol + '://' + request.get('host')}/v/${id}/file.mp3`,
               },
             },
           },
         ],
         enclosure: {
-          url: `http://localhost:3000/v/${id}/file.mp3`,
+          url: `${request.protocol + '://' + request.get('host')}/v/${id}/file.mp3`,
           type: 'audio/mpeg',
         },
       });
