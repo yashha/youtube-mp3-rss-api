@@ -11,20 +11,6 @@ const basePath = path.resolve(__dirname + '/../../cache');
 export class YoutubeMp3Controller implements OnModuleInit {
   constructor(private readonly youtubeMp3Service: YoutubeMp3Service) {}
 
-  @Get('v2/:id/file.mp3')
-  async mp3FirstAttempt(
-    @Res() response,
-    @Req() request,
-    @Param('id') id,
-  ): Promise<void> {
-    const url = `https://www.youtube.com/v/${id}`;
-    const file = await this.youtubeMp3Service.download(url, response);
-    // await response.sendFile(file);
-    request.on('end', () => {
-      this.youtubeMp3Service.cleanupOld();
-    });
-  }
-
   @Get('channel/:id/rss.xml')
   async rss(
     @Res() response: Response,

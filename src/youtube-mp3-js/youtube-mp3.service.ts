@@ -15,58 +15,6 @@ const basePath = path.resolve(__dirname + '/../../cache');
 export class YoutubeMp3Service {
   constructor(private readonly httpService: HttpService) {}
 
-  async download(url: string, res: Response): Promise<string> {
-    const file = path.resolve(basePath, filenamify(url) + '.mp3');
-    if (fs.existsSync(file)) {
-      return file;
-    }
-    const stream = ytdl(url);
-
-    res.contentType('mp3');
-    return new Promise<string>(resolve => {
-      ffmpeg(stream)
-        .withAudioCodec('libmp3lame')
-        .format('mp3')
-        .audioBitrate(64)
-        .on('error', function(err, stdout, stderr) {
-          console.log('an error happened: ' + err.message);
-          console.log('ffmpeg stdout: ' + stdout);
-          console.log('ffmpeg stderr: ' + stderr);
-        })
-        .on('end', function() {
-          console.log('Processing finished !');
-        })
-        .on('progress', function(progress) {
-          console.log('Streaming at ' + progress.timemark);
-        })
-        .pipe(
-          res,
-          { end: false },
-        );
-    });
-  }
-
-  deleteFilesOlderThan(directory: string, time: number) {
-    fs.readdir(directory, function(err, files) {
-      files.forEach(function(file, index) {
-        fs.stat(path.join(directory, file), function(err, stat) {
-          if (err) {
-            return console.error(err);
-          }
-          const now = new Date().getTime();
-          const endTime = new Date(stat.ctime).getTime() + time;
-          if (now > endTime) {
-            return fs.unlinkSync(path.join(directory, file));
-          }
-        });
-      });
-    });
-  }
-
-  cleanupOld() {
-    this.deleteFilesOlderThan(basePath, 60 * 60 * 1000);
-  }
-
   async getRss(id, request) {
     let parser = new Parser({
       customFields: {
