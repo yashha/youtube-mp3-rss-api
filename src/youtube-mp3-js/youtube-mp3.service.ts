@@ -54,6 +54,9 @@ export class YoutubeMp3Service {
     return rss.xml();
   }
 
+  /**
+   * The algorithm from https://github.com/iSolutionJA/youtube-audio is used here
+   */
   async streamYoutubeMiddleware(
     requestUrl: string,
     response: Response,
