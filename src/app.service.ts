@@ -8,7 +8,7 @@ export class AppService {
       <div>
         <h3>API: </h3>
         <div>/channel/:id/rss.xml</div>
-        <div>v/:id/file.mp3</div>
+        <div>/v/:id/file.mp3</div>
       </div>
       <div>
         <h3>Examples: </h3>
