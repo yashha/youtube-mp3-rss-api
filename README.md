@@ -1,5 +1,6 @@
 ## Description
 
+Public API to transform youtube videos into mp3 and youtube channels into rss feeds.
 
 ## Installation
 
