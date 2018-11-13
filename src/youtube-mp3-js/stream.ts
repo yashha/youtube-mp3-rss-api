@@ -17,17 +17,17 @@ export default function streamify(uri, opt?, startTimeInSeconds?) {
     opt,
   );
 
-  var video = ytdl(uri, opt);
+  const video = ytdl(uri, opt);
 
   function filterVideo(format) {
     return format.container === opt.videoFormat && format.audioEncoding;
   }
 
-  var stream = opt.file ? fs.createWriteStream(opt.file) : through();
+  const stream = opt.file ? fs.createWriteStream(opt.file) : through();
 
-  var ffmpeg = FFmpeg(video);
+  const ffmpeg = FFmpeg(video);
   opt.applyOptions(ffmpeg);
-  var output;
+  let output;
   if (startTimeInSeconds) {
     output = ffmpeg
       .setStartTime(startTimeInSeconds)
