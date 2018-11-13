@@ -6,26 +6,24 @@ import * as xtend from 'xtend';
 import * as fs from 'fs';
 
 export default function streamify(uri, opt?, startTimeInSeconds?) {
-  opt = xtend({
-    videoFormat: 'mp4',
-    quality: 'lowest',
-    audioFormat: 'mp3',
-    filter: filterVideo,
-    applyOptions: function () { }
-  }, opt);
+  opt = xtend(
+    {
+      videoFormat: 'mp4',
+      quality: 'lowest',
+      audioFormat: 'mp3',
+      filter: filterVideo,
+      applyOptions: function() {},
+    },
+    opt,
+  );
 
   var video = ytdl(uri, opt);
 
   function filterVideo(format) {
-    return (
-      format.container === opt.videoFormat &&
-      format.audioEncoding
-    );
+    return format.container === opt.videoFormat && format.audioEncoding;
   }
 
-  var stream = opt.file
-    ? fs.createWriteStream(opt.file)
-    : through();
+  var stream = opt.file ? fs.createWriteStream(opt.file) : through();
 
   var ffmpeg = FFmpeg(video);
   opt.applyOptions(ffmpeg);
@@ -47,6 +45,6 @@ export default function streamify(uri, opt?, startTimeInSeconds?) {
   output.on('error', stream.emit.bind(stream, 'error'));
   return {
     stream: stream,
-    ffmpeg: ffmpeg
+    ffmpeg: ffmpeg,
   };
 }

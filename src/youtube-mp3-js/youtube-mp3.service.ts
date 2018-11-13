@@ -40,13 +40,17 @@ export class YoutubeMp3Service {
             link: {
               _attr: {
                 rel: 'alternate',
-                href: `${request.protocol + '://' + request.get('host')}/v/${id}/file.mp3`,
+                href: `${request.protocol +
+                  '://' +
+                  request.get('host')}/v/${id}/file.mp3`,
               },
             },
           },
         ],
         enclosure: {
-          url: `${request.protocol + '://' + request.get('host')}/v/${id}/file.mp3`,
+          url: `${request.protocol +
+            '://' +
+            request.get('host')}/v/${id}/file.mp3`,
           type: 'audio/mpeg',
         },
       });
