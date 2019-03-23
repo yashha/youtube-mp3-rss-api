@@ -28,7 +28,7 @@ export class YoutubeMp3Service {
     });
 
     feed.items.map(item => {
-      const id = item.link.split('=')[1];
+      const itemId = item.link.split('=')[1];
       rss.item({
         title: item.title,
         description: item['media:group']['media:description'][0],
@@ -42,7 +42,7 @@ export class YoutubeMp3Service {
                 rel: 'alternate',
                 href: `${request.protocol +
                   '://' +
-                  request.get('host')}/v/${id}/file.mp3`,
+                  request.get('host')}/v/${itemId}/file.mp3`,
               },
             },
           },
@@ -50,7 +50,7 @@ export class YoutubeMp3Service {
         enclosure: {
           url: `${request.protocol +
             '://' +
-            request.get('host')}/v/${id}/file.mp3`,
+            request.get('host')}/v/${itemId}/file.mp3`,
           type: 'audio/mpeg',
         },
       });
