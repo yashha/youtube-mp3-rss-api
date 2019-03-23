@@ -20,7 +20,7 @@ export class YoutubeMp3Controller {
 
   @Get('v/:id/file.mp3')
   async mp3(@Res() response, @Req() request, @Param('id') id): Promise<void> {
-    let requestUrl = 'https://www.youtube.com/watch?v=' + id;
+    const requestUrl = 'https://www.youtube.com/watch?v=' + id;
 
     await this.youtubeMp3Service.streamYoutubeMiddleware(
       requestUrl,

@@ -12,7 +12,7 @@ export default function streamify(uri, opt?, startTimeInSeconds?) {
       quality: 'lowest',
       audioFormat: 'mp3',
       filter: filterVideo,
-      applyOptions: function() {},
+      applyOptions() {},
     },
     opt,
   );
@@ -44,7 +44,7 @@ export default function streamify(uri, opt?, startTimeInSeconds?) {
   // output.on('error', video.end.bind(video));
   output.on('error', stream.emit.bind(stream, 'error'));
   return {
-    stream: stream,
-    ffmpeg: ffmpeg,
+    stream,
+    ffmpeg,
   };
 }

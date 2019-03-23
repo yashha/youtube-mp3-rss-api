@@ -11,15 +11,15 @@ export class YoutubeMp3Service {
   constructor(private readonly httpService: HttpService) {}
 
   async getRss(id, request: Request) {
-    let parser = new Parser({
+    const parser = new Parser({
       customFields: {
         item: ['media:group'],
       },
     });
-    let feed = await parser.parseURL(
+    const feed = await parser.parseURL(
       'https://www.youtube.com/feeds/videos.xml?channel_id=' + id,
     );
-    let rss = new RSS({
+    const rss = new RSS({
       title: feed.title,
       site_url: feed.link,
       generator: ' ',
@@ -32,7 +32,7 @@ export class YoutubeMp3Service {
       rss.item({
         title: item.title,
         description: item['media:group']['media:description'][0],
-        author: item['author'],
+        author: item.author,
         date: item.pubDate,
         url: item.link,
         custom_elements: [
@@ -67,33 +67,35 @@ export class YoutubeMp3Service {
     request: Request,
   ) {
     await ytdl.getInfo(requestUrl, (err, info) => {
-      const duration: number = parseInt(info.length_seconds);
+      const duration: number = parseInt(info.length_seconds, 10);
       if (duration === 0) {
         if (err) return console.log(err);
-        let liveStreamURL = ytdl(requestUrl);
+        const liveStreamURL = ytdl(requestUrl);
         ffmpeg(liveStreamURL)
           .audioCodec('libmp3lame')
           .format('mp3')
-          .on('error', err => {
-            console.log('ffmpeg error:', err.message);
+          .on('error', suberr => {
+            console.log('ffmpeg error:', suberr.message);
           })
           .audioBitrate(128)
           .pipe(response);
       } else {
-        let contentType = 'audio/mpeg';
+        const contentType = 'audio/mpeg';
         // calculate length in bytes, (((bitrate * (lengthInSeconds)) / bitsToKiloBytes) * kiloBytesToBytes)
         // using 125 instead of 128 because it is more accurate
-        let durationInBytes = ((125 * duration) / 8) * 1024;
+        const durationInBytes = ((125 * duration) / 8) * 1024;
         if (request.headers.range) {
-          let range = <string>request.headers.range;
-          let parts = range.replace(/bytes=/, '').split('-');
-          let partialstart = parts[0];
-          let partialend = parts[1];
+          const range = request.headers.range as string;
+          const parts = range.replace(/bytes=/, '').split('-');
+          const partialstart = parts[0];
+          const partialend = parts[1];
 
-          let start = parseInt(partialstart, 10);
-          let end = partialend ? parseInt(partialend, 10) : durationInBytes - 1;
+          const start = parseInt(partialstart, 10);
+          const end = partialend
+            ? parseInt(partialend, 10)
+            : durationInBytes - 1;
 
-          let chunksize = end - start + 1;
+          const chunksize = end - start + 1;
           response.writeHead(206, {
             'Content-Type': contentType,
             'Accept-Ranges': 'bytes',
@@ -104,8 +106,8 @@ export class YoutubeMp3Service {
 
           // convert start in bytes to start in seconds
           // minus one second to prevent content length error
-          let startInSeconds = (start / (1024 * 125)) * 8 - 1;
-          let streamObj = stream(requestUrl, {}, startInSeconds);
+          const startInSeconds = (start / (1024 * 125)) * 8 - 1;
+          const streamObj = stream(requestUrl, {}, startInSeconds);
           streamObj.stream.pipe(response);
         } else {
           response.writeHead(200, {
@@ -113,7 +115,7 @@ export class YoutubeMp3Service {
             'Content-Length': durationInBytes,
             'Transfer-Encoding': 'chuncked',
           });
-          let streamObj = stream(requestUrl);
+          const streamObj = stream(requestUrl);
           streamObj.stream.pipe(response);
         }
       }
